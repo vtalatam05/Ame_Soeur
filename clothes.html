@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Women's Clothes Collections</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"> </script>
+    <script script src = "supabase.js"> </script>
+    <style>
+        /* Global Styles */
+        body {
+            margin: 0;
+            font-family: 'Georgia', sans-serif;
+            color: #fff;
+            /* Background styling with movement */
+            background: url('C_bg.jpg') no-repeat center center;
+            background-size: cover;
+            background-position: center center;
+        }
+
+        /* Overlay to ensure text stands out */
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6); /* Black overlay with 60% opacity */
+            z-index: -1; /* Keeps overlay behind the content */
+        }
+
+        /* Main Section */
+        .main-content {
+            margin-top: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 1rem;
+        }
+
+        .main-content h2 {
+            font-size: 2.5rem;
+            color: #e52c2c;
+            margin-bottom: 1rem;
+        }
+
+        .main-content p {
+            font-size: 1.2rem;
+            color: black;
+            margin-bottom: 2rem;
+            text-align: center;
+            font-family: 'Cursive', Georgia, sans-serif;
+        }
+
+        .sections {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            width: 100%;
+            max-width: 1200px;
+        }
+
+        .section {
+            text-align: center;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 1rem;
+            background-color: rgba(17, 17, 17, 0.9);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .section:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 16px rgba(255, 255, 255, 0.1);
+        }
+
+        .section img {
+            width: 100%;
+            max-width: 300px;
+            height: auto;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .section a {
+            text-decoration: none;
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #e52c2c;
+            transition: color 0.3s ease;
+        }
+
+        .section a:hover {
+            text-decoration: underline;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 1rem;
+            background-color: rgba(17, 17, 17, 0.9);
+            border-top: 2px solid #333;
+            margin-top: 2rem;
+        }
+
+        footer p {
+            margin: 0.5rem 0;
+            font-size: 0.9rem;
+            color: #aaa;
+        }
+
+        footer a {
+            text-decoration: none;
+            color: #e52c2c;
+            font-weight: bold;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+
+    <script>
+        /*Item and Brand Linkage*/
+        document.addEventListener("DOMContentLoaded", function () {
+            const brandLinks = document.querySelectorAll(".section a");
+        
+            // Extract email from URL parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            const email = urlParams.get('email');
+        
+            brandLinks.forEach(link => {
+                link.addEventListener("click", async function (e) {
+                    e.preventDefault();
+        
+                    const pcName = link.parentElement.querySelector("h3")?.innerText; // Extract brand name
+                    const prodName = document.querySelector("h2")?.innerText.trim();  // Extract product name
+        
+                    if (!email) {
+                        alert("Please sign in first.");
+                        window.location.href = "zwebsite.html"; // Redirect to sign-in if email is missing
+                        return;
+                    }
+        
+                    try {
+                        const { error } = await supabase
+                            .from('product_links')
+                            .insert({
+                                email: email,
+                                prod_name: prodName,
+                                pc_name: pcName
+                            });
+        
+                        if (error) {
+                            console.error("Error inserting new entry:", error.message);
+                            alert("Error inserting new entry. Please try again.");
+                            return;
+                        }
+        
+                        //alert(`"${pcName}" linked successfully with product "${prodName}".`);
+                        window.open(link.getAttribute("href"), "_blank"); // Open link after updating
+                    } catch (error) {
+                        console.error("Unexpected Error:", error.message);
+                        alert("An unexpected error occurred. Please try again.");
+                    }
+                });
+            });
+        });
+    </script>
+
+</head>
+<body>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <h2>Women's Clothes</h2>
+        <p>Discover the finest clothes from top luxury brands for every occasion.</p>
+
+        <div class="sections">
+            <!-- Brand 1: Chanel -->
+            <div class="section" id="brand1">
+                <img src="C_chanel.jpg" alt="Chanel">
+                <h3>Chanel</h3>
+                <a href="https://www.chanel.com/in/fashion/ready-to-wear/l/1x1x9x8/dresses/">See more</a>
+            </div>
+
+            <!-- Brand 2: Louis Vuitton -->
+            <div class="section" id="brand2">
+                <img src="C_louis_vuitton.jpg" alt="Louis Vuitton">
+                <h3>Louis Vuitton</h3>
+                <a href="https://in.louisvuitton.com/eng-in/women/ready-to-wear/all-ready-to-wear/_/N-to8aw9x">See more</a>
+            </div>
+
+            <!-- Brand 3: Prada -->
+            <div class="section" id="brand3">
+                <img src="C_prada.jpg" alt="Prada">
+                <h3>Prada</h3>
+                <a href="https://www.prada.com/us/en/womens/ready-to-wear/c/10048US">See more</a>
+            </div>
+
+            <!-- Brand 4: Dior -->
+            <div class="section" id="brand4">
+                <img src="C_dior.jpg" alt="Dior">
+                <h3>Dior</h3>
+                <a href="https://www.dior.com/en_int/fashion/womens-fashion/ready-to-wear/all-ready-to-wear">See more</a>
+            </div>
+
+            <!-- Brand 5: Hermes -->
+            <div class="section" id="brand5">
+                <img src="C_hermes.jpg" alt="Hermes">
+                <h3>Hermes</h3>
+                <a href="https://www.hermes.com/us/en/category/women/ready-wear/#|">See more</a>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2024 Women's Clothes Collections. All Rights Reserved.</p>
+        <p>
+            <a href="zwebsite.html" target="_blank">Official Website</a> | 
+            <a href="#privacy">Privacy Policy</a>
+        </p>
+    </footer>
+
+</body>
+</html>

@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Watches Collections</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"> </script>
+    <script script src = "supabase.js"> </script>
+    <style>
+        /* Global Styles */
+        body {
+            margin: 0;
+            font-family: 'Georgia', sans-serif;
+            color: #fff;
+            background: url('W_bg.jpg') no-repeat center center fixed; /* Background image */
+            background-size: cover;
+        }
+
+        /* Main Section */
+        .main-content {
+            margin-top: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 1rem;
+        }
+
+        .main-content h2 {
+            font-size: 2.5rem;
+            color: black; /* Updated color for the heading */
+            margin-bottom: 1rem;
+        }
+
+        .main-content p {
+            font-size: 1.2rem;
+            color: black; /* Updated to a visible light color */
+            margin-bottom: 2rem;
+            text-align: center;
+            font-family: 'Cursive', Georgia, sans-serif;
+        }
+
+        .sections {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr); /* 4 columns */
+            gap: 1.5rem;
+            width: 100%;
+            max-width: 1200px;
+        }
+
+        .section {
+            text-align: center;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 1rem;
+            background-color: rgba(17, 17, 17, 0.9);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .section:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 16px rgba(255, 255, 255, 0.1);
+        }
+
+        /* Image styling */
+        img {
+            width: 100%;
+            height: 300px;
+            object-fit: cover; /* Ensures images fit nicely within the dimensions */
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        /* Specific styling for the Craft with Heritage Perception section */
+        .heritage-section {
+            text-align: center;
+            margin-top: 3rem;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+
+        .heritage-section .sections {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr); /* 3 columns */
+            gap: 1.5rem;
+            max-width: 1000px; /* Limit the max width */
+        }
+
+        .heritage-section h2 {
+            font-size: 2.5rem;
+            color: black;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Styling for the "See more" link */
+        .section a {
+            text-decoration: none;
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #e52c2c; /* Red color */
+            transition: color 0.3s ease;
+        }
+
+        .section a:hover {
+            text-decoration: underline;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 1rem;
+            background-color: rgba(17, 17, 17, 0.9);
+            border-top: 2px solid #333;
+            margin-top: 2rem;
+        }
+
+        footer p {
+            margin: 0.5rem 0;
+            font-size: 0.9rem;
+            color: #aaa;
+        }
+
+        footer a {
+            text-decoration: none;
+            color: #e52c2c;
+            font-weight: bold;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+
+    <script>
+        /*Item and Brand Linkage*/
+        document.addEventListener("DOMContentLoaded", function () {
+            const brandLinks = document.querySelectorAll(".section a");
+        
+            // Extract email from URL parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            const email = urlParams.get('email');
+        
+            brandLinks.forEach(link => {
+                link.addEventListener("click", async function (e) {
+                    e.preventDefault();
+        
+                    const pcName = link.parentElement.querySelector("h3")?.innerText; // Extract brand name
+                    const prodName = document.querySelector("h2")?.innerText.trim();  // Extract product name
+        
+                    if (!email) {
+                        alert("Please sign in first.");
+                        window.location.href = "zwebsite.html"; // Redirect to sign-in if email is missing
+                        return;
+                    }
+        
+                    try {
+                        const { error } = await supabase
+                            .from('product_links')
+                            .insert({
+                                email: email,
+                                prod_name: prodName,
+                                pc_name: pcName
+                            });
+        
+                        if (error) {
+                            console.error("Error inserting new entry:", error.message);
+                            alert("Error inserting new entry. Please try again.");
+                            return;
+                        }
+        
+                        //alert(`"${pcName}" linked successfully with product "${prodName}".`);
+                        window.open(link.getAttribute("href"), "_blank"); // Open link after updating
+                    } catch (error) {
+                        console.error("Unexpected Error:", error.message);
+                        alert("An unexpected error occurred. Please try again.");
+                    }
+                });
+            });
+        });
+    </script>
+
+</head>
+<body>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <h2>Watches</h2>
+        <p>
+            Time is a masterpiece, and so should be your watch. Explore the elegance and precision of the world's most iconic timepieces. For those who never settle for anything less than perfection, because every second matters in style!
+        </p>
+
+        <div class="sections">
+            <!-- Brand 1: Rolex -->
+            <div class="section" id="brand1">
+                <img src="W_rolex.jpg" alt="Rolex">
+                <h3>Rolex</h3>
+                <a href="https://www.rolex.com/">See more</a>
+            </div>
+
+            <!-- Brand 2: Patek Philippe -->
+            <div class="section" id="brand2">
+                <img src="W_patek_philippe.jpg" alt="Patek Philippe">
+                <h3>Patek Philippe</h3>
+                <a href="https://www.patek.com/">See more</a>
+            </div>
+
+            <!-- Brand 3: Audemars Piguet -->
+            <div class="section" id="brand3">
+                <img src="W_audemars_piguet.jpg" alt="Audemars Piguet">
+                <h3>Audemars Piguet</h3>
+                <a href="https://www.audemarspiguet.com/">See more</a>
+            </div>
+
+            <!-- Brand 4: Vacheron Constantin -->
+            <div class="section" id="brand4">
+                <img src="W_vacheron_constantin.jpg" alt="Vacheron Constantin">
+                <h3>Vacheron Constantin</h3>
+                <a href="https://www.vacheron-constantin.com/">See more</a>
+            </div>
+        </div>
+
+        <!-- Craft with Heritage Perception -->
+        <div class="heritage-section">
+            <div class="sections">
+                <!-- Brand 5: Hublot -->
+                <div class="section" id="brand5">
+                    <img src="W_hublot.jpg" alt="Hublot">
+                    <h3>Hublot</h3>
+                    <a href="https://www.hublot.com/">See more</a>
+                </div>
+
+                <!-- Brand 6: Jaquet Droz -->
+                <div class="section" id="brand6">
+                    <img src="W_jaquet_droz.jpg" alt="Jaquet Droz">
+                    <h3>Jaquet Droz</h3>
+                    <a href="https://www.jaquet-droz.com/">See more</a>
+                </div>
+
+                <!-- Brand 7: Jacob & Co -->
+                <div class="section" id="brand7">
+                    <img src="W_jacob_co.jpg" alt="Jacob & Co">
+                    <h3>Jacob & Co</h3>
+                    <a href="https://www.jacobandco.com/">See more</a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2024 Watches Collections. All Rights Reserved.</p>
+        <p>
+            <a href="zwebsite.html" target="_blank">Official Website</a> | 
+            <a href="#privacy">Privacy Policy</a>
+        </p>
+    </footer>
+
+</body>
+</html>

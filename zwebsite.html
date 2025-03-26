@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ame Soeur</title>
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script script src = "supabase.js"> </script>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Georgia', serif;
+            color: #000;
+            background-color: #fff;
+            overflow-x: hidden;
+        }
+
+        /* Intro Slide */
+        .intro-slide {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background-color: #fff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            z-index: 2000;
+            transition: opacity 1s ease, visibility 1s ease;
+        }
+
+        .intro-slide img {
+            width: 150px;
+            height: auto;
+            margin-bottom: 1rem;
+        }
+
+        .intro-slide h1 {
+            font-size: 3rem;
+            font-weight: bold;
+            font-family: 'Great Vibes', cursive;
+            color: #333;
+        }
+
+        /* Fade-out effect */
+        .fade-out {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        /* Fullscreen Video */
+        .fullscreen-video-container {
+            width: 100%;
+            height: 100vh;
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(50px);
+            transition: opacity 1s ease, transform 1s ease;
+        }
+
+        .fullscreen-video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .fullscreen-video-container:hover .fullscreen-video {
+            transform: scale(1.05);
+        }
+
+        /* Latest Shows Section */
+        .latest-shows {
+            text-align: center;
+            margin-top: 2rem;
+            font-size: 2rem;
+            font-weight: bold;
+            opacity: 0;
+            transform: translateY(50px);
+            transition: opacity 1s ease, transform 1s ease;
+        }
+
+        /* Video Grid */
+        .video-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+            margin: 2rem 0;
+            width: 100%;
+            height: 100vh;
+            opacity: 0;
+            transform: translateY(50px);
+            transition: opacity 1s ease, transform 1s ease;
+        }
+
+        .video-container video {
+            width: 50%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border-radius: 10px;
+        }
+
+        .video-container video:hover {
+            transform: scale(1.1);
+            box-shadow: 0px 15px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        /* Header */
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-bottom: 1px solid #ccc;
+            padding: 1rem 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .logo {
+            position: absolute;
+            left: 2rem;
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #000;
+            font-family: "Lucida Handwriting", cursive;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin: 0;
+            padding: 0;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #000;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+
+        nav a:hover {
+            color: #c2935b;
+        }
+
+        /* Feedback Form Styling */
+        .form-container {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 400px;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+            z-index: 3000;
+        }
+        .form-container form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+         }
+
+        .form-container label {
+            width: 100%;
+            text-align: left;
+            margin-top: 10px;
+         }
+
+         .form-container input, .form-container button {
+             width: 80%;
+         }
+
+        h1, label {
+            color: black;
+        }
+        input, textarea, button {
+            width: 80%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            background-color: black;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: red;
+        }
+
+        /* Fade-out effect */
+        .fade-out {
+            opacity: 0;
+            visibility: hidden;
+        }
+    </style>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+    const introSlide = document.querySelector(".intro-slide");
+    const fullscreenVideos = document.querySelectorAll(".fullscreen-video");
+    const elementsToReveal = document.querySelectorAll(".video-container, .latest-shows, .fullscreen-video-container");
+    const formContainer = document.getElementById("form-container");
+    const feedbackForm = document.getElementById("feedback-form");
+
+    /* Fade out intro slide */
+    setTimeout(() => {
+        if (introSlide) {
+            introSlide.classList.add("fade-out");
+        }
+    }, 2000);
+
+    /* Reveal sections on scroll */
+    function revealOnScroll() {
+        elementsToReveal.forEach(element => {
+            const rect = element.getBoundingClientRect();
+            if (rect.top < window.innerHeight * 0.75) {
+                element.style.opacity = 1;
+                element.style.transform = "translateY(0)";
+            }
+        });
+    }
+    window.addEventListener("scroll", revealOnScroll);
+    revealOnScroll();
+
+    /* Play fullscreen videos on hover, pause on mouseout */
+    fullscreenVideos.forEach(video => {
+        video.pause();
+        video.addEventListener("mouseenter", function () { this.play(); });
+        video.addEventListener("mouseleave", function () { this.pause(); });
+    });
+
+    /* Play other videos on hover, restart on mouseout */
+    document.querySelectorAll(".video-container video").forEach(video => {
+        video.addEventListener("mouseenter", function () { this.play(); });
+        video.addEventListener("mouseleave", function () { this.pause(); this.currentTime = 0; });
+    });
+
+    /* Show the feedback form after 5 seconds */
+    setTimeout(() => {
+        if (formContainer) {
+            formContainer.style.display = "block";
+            setTimeout(() => { formContainer.style.opacity = "1"; }, 100);
+        }
+    }, 5000);
+
+    /* Feedback form submission logic */
+    if (feedbackForm) {
+        feedbackForm.addEventListener("submit", async function (e) {
+            e.preventDefault();
+    
+            const name = document.getElementById("name").value.trim();
+            const email = document.getElementById("email").value.trim();
+            const pwd = document.getElementById("pwd").value.trim();
+            const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/;
+    
+            if (!name || !email || !pwd) {
+                alert("Please fill out all fields before submitting.");
+                return;
+            }
+    
+            if (!passwordRegex.test(pwd)) {
+                alert("Password must be at least 8 characters long and include at least one uppercase letter, one lowercase letter, one number, and one special character.");
+                return;
+            }
+    
+            try {
+                // Insert or update customer account first
+                const { error: accountError } = await supabase
+                    .from('customer_accounts')
+                    .upsert([{ name: name, email: email, pwd: pwd }]);
+            
+                /*if (accountError) {
+                    console.error("Error updating customer account:", accountError.message);
+                    alert("Error updating customer account. Please try again.");
+                    return;
+                }*/
+
+                alert("Account logged in successfully.");
+                
+                // Dynamically append `?email=` to all links
+                document.querySelectorAll("a").forEach(link => {
+                    const currentURL = new URL(link.href, window.location.origin);
+                    currentURL.searchParams.set('email', email); // Append email to URL
+                    link.href = currentURL.toString();
+                });
+
+            } catch (error) {
+                console.error('Unexpected Error:', error.message);
+                alert("An unexpected error occurred. Please try again.");
+            }
+
+            // Form fade-out effect
+            if (formContainer) {
+                formContainer.style.opacity = "0";
+                setTimeout(() => {
+                    formContainer.style.display = "none";
+                }, 500);
+            }
+        });
+    }
+});
+</script>
+</head>
+<body>
+    <header>
+        <div class="logo">Ame Soeur</div>
+        <nav>
+            <ul>
+                <li><a href="clothes.html" class="navbar-link" data-product-name="Clothes" target="_blank">Clothes</a></li>
+                <li><a href="shoes.html" class="navbar-link" data-product-name="Heels" target="_blank">Heels</a></li>
+                <li><a href="accessories.html" class="navbar-link" data-product-name="Accessories" target="_blank">Accessories</a></li>
+                <li><a href="jewellery.html" class="navbar-link" data-product-name="Jewellery" target="_blank">Jewellery</a></li>
+                <li><a href="watches.html" class="navbar-link" data-product-name="Watches" target="_blank">Watches</a></li>
+                <li><a href="perfume.html" class="navbar-link" data-product-name="Perfume" target="_blank">Perfume</a></li>
+                <li><a href="skincare.html" class="navbar-link" data-product-name="Skincare" target="_blank">Skincare</a></li>
+                <li><a href="makeup.html" class="navbar-link" data-product-name="MakeUp" target="_blank">Makeup</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Intro Slide -->
+    <div class="intro-slide">
+        <img src="logo.png" alt="Ame Soeur Logo">
+        <h1>Where Luxury Meets Soul</h1>
+    </div>
+
+    <!-- Fullscreen Video Background -->
+    <div class="fullscreen-video-container">
+        <video class="fullscreen-video" muted loop>
+            <source src="CHANEL Fall-Winter 2024_25 Haute Couture Show — CHANEL Shows.mkv" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+    </div>
+
+    <!-- Latest Shows Heading -->
+    <div class="latest-shows">
+        <h2>Latest Shows</h2>
+    </div>
+
+    <!-- Video Grid -->
+    <div class="video-container">
+        <video muted loop>
+            <source src="Fall-Winter 2024-25 Haute Couture Show.mp4" type="video/mp4">
+        </video>
+
+        <video muted loop>
+            <source src="Fall-Winter 2024-25 Haute Couture Show_2.mp4" type="video/mp4">
+        </video>
+    </div>
+
+    <!-- Last Fullscreen Video -->
+    <div class="fullscreen-video-container">
+        <video class="fullscreen-video" muted loop>
+            <source src="Chanel - Métiers d’Art Show 2024-25 - Hangzhou.mp4" type="video/mp4">
+        </video>
+    </div>
+
+    <!-- Feedback Form -->
+    <div class="form-container" id="form-container">
+        <form id="feedback-form">
+            <h1>Sign-in</h1>
+    
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" placeholder="Enter your name" required>
+    
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" placeholder="Enter your email" required>
+    
+            <label for="pwd">Password:</label>
+            <input type="password" id="pwd" name="pwd" placeholder="Enter your password" required>
+    
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+</body>
+</html>

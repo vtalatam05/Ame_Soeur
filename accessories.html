@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accessories Collections</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"> </script>
+    <script script src = "supabase.js"> </script>
+    <style>
+        /* Global Styles */
+        body {
+            margin: 0;
+            font-family: 'Georgia', sans-serif;
+            color: #fff;
+            background: url('A_bg.jpg') no-repeat center center fixed; /* Background image */
+            background-size: cover;
+        }
+
+        /* Main Section */
+        .main-content {
+            margin-top: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 1rem;
+        }
+
+        .main-content h2 {
+            font-size: 2.5rem;
+            color: white; /* Updated color for the heading */
+            margin-bottom: 1rem;
+        }
+
+        .main-content p {
+            font-size: 1.2rem;
+            color: #f8f8f8; /* Updated to a visible light color */
+            margin-bottom: 2rem;
+            text-align: center;
+            font-family: 'Cursive', Georgia, sans-serif;
+        }
+
+        .sections {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            width: 100%;
+            max-width: 1200px;
+        }
+
+        .section {
+            text-align: center;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 1rem;
+            background-color: rgba(17, 17, 17, 0.9);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .section:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 16px rgba(255, 255, 255, 0.1);
+        }
+
+        .section img {
+            width: 300px; /* Fixed width for uniform size */
+            height: 300px; /* Fixed height for uniform size */
+            object-fit: cover; /* Ensures images fit nicely within the dimensions */
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .section a {
+            text-decoration: none;
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #e52c2c;
+            transition: color 0.3s ease;
+        }
+
+        .section a:hover {
+            text-decoration: underline;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 1rem;
+            background-color: rgba(17, 17, 17, 0.9);
+            border-top: 2px solid #333;
+            margin-top: 2rem;
+        }
+
+        footer p {
+            margin: 0.5rem 0;
+            font-size: 0.9rem;
+            color: #aaa;
+        }
+
+        footer a {
+            text-decoration: none;
+            color: #e52c2c;
+            font-weight: bold;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+
+    <script>
+        /*Item and Brand Linkage*/
+        document.addEventListener("DOMContentLoaded", function () {
+            const brandLinks = document.querySelectorAll(".section a");
+        
+            // Extract email from URL parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            const email = urlParams.get('email');
+        
+            brandLinks.forEach(link => {
+                link.addEventListener("click", async function (e) {
+                    e.preventDefault();
+        
+                    const pcName = link.parentElement.querySelector("h3")?.innerText; // Extract brand name
+                    const prodName = document.querySelector("h2")?.innerText.trim();  // Extract product name
+        
+                    if (!email) {
+                        alert("Please sign in first.");
+                        window.location.href = "zwebsite.html"; // Redirect to sign-in if email is missing
+                        return;
+                    }
+        
+                    try {
+                        const { error } = await supabase
+                            .from('product_links')
+                            .insert({
+                                email: email,
+                                prod_name: prodName,
+                                pc_name: pcName
+                            });
+        
+                        if (error) {
+                            console.error("Error inserting new entry:", error.message);
+                            alert("Error inserting new entry. Please try again.");
+                            return;
+                        }
+        
+                        //alert(`"${pcName}" linked successfully with product "${prodName}".`);
+                        window.open(link.getAttribute("href"), "_blank"); // Open link after updating
+                    } catch (error) {
+                        console.error("Unexpected Error:", error.message);
+                        alert("An unexpected error occurred. Please try again.");
+                    }
+                });
+            });
+        });
+    </script>
+
+</head>
+<body>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <h2>Accessories</h2>
+        <p>Explore luxury accessories from the world's top brands.</p>
+
+        <div class="sections">
+            <!-- Brand 1: Balenciaga -->
+            <div class="section" id="brand1">
+                <img src="A_balenciaga.jpg" alt="Balenciaga">
+                <h3>Balenciaga</h3>
+                <a href="https://www.balenciaga.com/">See more</a>
+            </div>
+
+            <!-- Brand 2: Fendi -->
+            <div class="section" id="brand2">
+                <img src="A_fendi.jpg" alt="Fendi">
+                <h3>Fendi</h3>
+                <a href="https://www.fendi.com/">See more</a>
+            </div>
+
+            <!-- Brand 3: Hermes -->
+            <div class="section" id="brand3">
+                <img src="A_hermes.jpg" alt="Hermes">
+                <h3>Hermes</h3>
+                <a href="https://www.hermes.com/">See more</a>
+            </div>
+
+            <!-- Brand 4: Gucci -->
+            <div class="section" id="brand4">
+                <img src="A_gucci.jpg" alt="Gucci">
+                <h3>Gucci</h3>
+                <a href="https://www.gucci.com/">See more</a>
+            </div>
+
+            <!-- Brand 5: Fossil -->
+            <div class="section" id="brand5">
+                <img src="A_fossil.jpg" alt="Fossil">
+                <h3>Fossil</h3>
+                <a href="https://www.fossil.com/">See more</a>
+            </div>
+
+            <!-- Brand 6: Giorgio Armani -->
+            <div class="section" id="brand6">
+                <img src="A_giorgio_armani.jpg" alt="Giorgio Armani">
+                <h3>Giorgio Armani</h3>
+                <a href="https://www.armani.com/en-us/giorgio-armani/woman/accessories/">See more</a>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2024 Accessories Collections. All Rights Reserved.</p>
+        <p>
+            <a href="zwebsite.html" target="_blank">Official Website</a> | 
+            <a href="#privacy">Privacy Policy</a>
+        </p>
+    </footer>
+
+</body>
+</html>

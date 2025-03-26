@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Women's Heels Collections</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"> </script>
+    <script script src = "supabase.js"> </script>
+    <style>
+        /* Global Styles */
+        body {
+            margin: 0;
+            font-family: 'Georgia', sans-serif;
+            color: #fff;
+            background: url('S_bg.jpg') no-repeat center center fixed; /* Background image */
+            background-size: cover;
+        }
+
+        /* Main Section */
+        .main-content {
+            margin-top: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 1rem;
+        }
+
+        .main-content h2 {
+            font-size: 2.5rem;
+            color: #e52c2c;
+            margin-bottom: 1rem;
+        }
+
+        .main-content p {
+            font-size: 1.2rem;
+            color: black;
+            margin-bottom: 2rem;
+            text-align: center;
+            font-family: 'Cursive', Georgia, sans-serif;
+        }
+
+        .sections {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            width: 100%;
+            max-width: 1200px;
+        }
+
+        .section {
+            text-align: center;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 1rem;
+            background-color: rgba(17, 17, 17, 0.9);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .section:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 16px rgba(255, 255, 255, 0.1);
+        }
+
+        .section img {
+            width: 100%;
+            max-width: 300px;
+            height: auto;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .section a {
+            text-decoration: none;
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #e52c2c;
+            transition: color 0.3s ease;
+        }
+
+        .section a:hover {
+            text-decoration: underline;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 1rem;
+            background-color: rgba(17, 17, 17, 0.9);
+            border-top: 2px solid #333;
+            margin-top: 2rem;
+        }
+
+        footer p {
+            margin: 0.5rem 0;
+            font-size: 0.9rem;
+            color: #aaa;
+        }
+
+        footer a {
+            text-decoration: none;
+            color: #e52c2c;
+            font-weight: bold;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+
+    <script>
+        /*Item and Brand Linkage*/
+        document.addEventListener("DOMContentLoaded", function () {
+            const brandLinks = document.querySelectorAll(".section a");
+        
+            // Extract email from URL parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            const email = urlParams.get('email');
+        
+            brandLinks.forEach(link => {
+                link.addEventListener("click", async function (e) {
+                    e.preventDefault();
+        
+                    const pcName = link.parentElement.querySelector("h3")?.innerText; // Extract brand name
+                    const prodName = document.querySelector("h2")?.innerText.trim();  // Extract product name
+        
+                    if (!email) {
+                        alert("Please sign in first.");
+                        window.location.href = "zwebsite.html"; // Redirect to sign-in if email is missing
+                        return;
+                    }
+        
+                    try {
+                        const { error } = await supabase
+                            .from('product_links')
+                            .insert({
+                                email: email,
+                                prod_name: prodName,
+                                pc_name: pcName
+                            });
+        
+                        if (error) {
+                            console.error("Error inserting new entry:", error.message);
+                            alert("Error inserting new entry. Please try again.");
+                            return;
+                        }
+        
+                        //alert(`"${pcName}" linked successfully with product "${prodName}".`);
+                        window.open(link.getAttribute("href"), "_blank"); // Open link after updating
+                    } catch (error) {
+                        console.error("Unexpected Error:", error.message);
+                        alert("An unexpected error occurred. Please try again.");
+                    }
+                });
+            });
+        });
+    </script>
+
+</head>
+<body>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <h2>Women's Heels</h2>
+        <p>Discover stunning heels from top brands for every occasion.</p>
+
+        <div class="sections">
+            <!-- Brand 1: Women's Heels -->
+            <div class="section" id="brand1">
+                <img src="S_louboutin.jpg" alt="Louboutin">
+                <h3>Louboutin</h3>
+                <a href="https://us.christianlouboutin.com/us_en/ladies/">See more</a>
+            </div>
+
+            <!-- Brand 2: Women's Heels -->
+            <div class="section" id="brand2">
+                <img src="S_saint_laurent.jpg" alt="Saint Laurent">
+                <h3>Saint Laurent</h3>
+                <a href="https://www.ysl.com/en-fr/ca/shop-women/shoes/mules-and-pumps?srsltid=AfmBOopYYGfFh8b34zwK5_Fu0nwU4UXMDfkRKXqtOcjZWWPrFQGGwAS9">See more</a>
+            </div>
+
+            <!-- Brand 5: Women's Heels (Jimmy Choo) placed beside Saint Laurent -->
+            <div class="section" id="brand5">
+                <img src="S_jimmy_choo.jpg" alt="Jimmy Choo">
+                <h3>Jimmy Choo</h3>
+                <a href="https://us.jimmychoo.com/en/women/shoes/pumps/">See more</a>
+            </div>
+
+            <!-- Brand 3: Women's Heels -->
+            <div class="section" id="brand3">
+                <img src="S_prada.jpg" alt="Prada">
+                <h3>Prada</h3>
+                <a href="https://www.prada.com/ww/en/womens/shoes/c/10070EU">See more</a>
+            </div>
+
+            <!-- Brand 4: Women's Heels -->
+            <div class="section" id="brand4">
+                <img src="S_manolo_blahnik.jpg" alt="Manolo Blahnik">
+                <h3>Manolo Blahnik</h3>
+                <a href="https://www.manoloblahnik.com/us/women/style.html">See more</a>
+            </div>
+
+            <!-- Brand 6: Women's Heels -->
+            <div class="section" id="brand6">
+                <img src="S_valentino.jpg" alt="Valentino">
+                <h3>Valentino</h3>
+                <a href="https://www.valentino.com/us/women/shoes/pumps">See more</a>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2024 Women's Heels Collections. All Rights Reserved.</p>
+        <p>
+            <a href="zwebsite.html" target="_blank">Official Website</a> | 
+            <a href="#privacy">Privacy Policy</a>
+        </p>
+    </footer>
+
+</body>
+</html>
